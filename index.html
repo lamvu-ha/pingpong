@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grammar Ping Pong Lab 🏓</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <div class="logo">
+      <i data-lucide="gamepad-2" class="logo-icon"></i>
+      <span class="logo-text">Grammar<span class="logo-accent">Ping</span>Pong</span>
+    </div>
+    <nav class="nav" id="nav">
+      <a href="#" class="nav-link active" data-page="dashboard"><i data-lucide="home"></i> Home</a>
+      <a href="#" class="nav-link" data-page="practice"><i data-lucide="zap"></i> Practice</a>
+      <a href="#" class="nav-link" data-page="reading"><i data-lucide="book-open"></i> Reading</a>
+      <a href="#" class="nav-link" data-page="vocabulary"><i data-lucide="book-marked"></i> Vocab</a>
+      <a href="#" class="nav-link" data-page="grammar-lib"><i data-lucide="library"></i> Grammar</a>
+      <a href="#" class="nav-link" data-page="progress"><i data-lucide="bar-chart-2"></i> Progress</a>
+    </nav>
+    <div class="header-right">
+      <div class="streak-badge" id="streakBadge"><i data-lucide="flame"></i> <span id="streakCount">0</span></div>
+      <div class="xp-badge"><i data-lucide="star"></i> <span id="xpCount">0</span> XP</div>
+      <button class="dark-toggle" id="darkToggle" title="Toggle dark mode"><i data-lucide="moon"></i></button>
+      <button class="hamburger" id="hamburger"><i data-lucide="menu"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="main">
+
+  <!-- ============ PAGE: DASHBOARD ============ -->
+  <div class="page active" id="page-dashboard">
+    <div class="dashboard-hero">
+      <div class="hero-content">
+        <h1 class="hero-title">Master English<br><span class="hero-accent">Grammar</span> with Fun!</h1>
+        <p class="hero-sub">Học ngữ pháp tiếng Anh qua lối chơi ping pong — tương tác, thú vị, hiệu quả!</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><span id="dashTotal">0</span><small>Questions</small></div>
+          <div class="hero-stat"><span id="dashCorrect">0</span><small>Correct</small></div>
+          <div class="hero-stat"><span id="dashStreak">0</span><small>Streak</small></div>
+        </div>
+        <button class="btn-primary btn-lg" onclick="showPage('practice'); startNewQuestion()"><i data-lucide="play"></i> Start Playing!</button>
+      </div>
+      <div class="hero-art">
+        <div class="ball-animation">
+          <div class="ball ball1"><i data-lucide="pen-tool"></i></div>
+          <div class="ball ball2"><i data-lucide="check-circle-2"></i></div>
+          <div class="ball ball3"><i data-lucide="lightbulb"></i></div>
+          <div class="ping-pong-table"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode Cards -->
+    <section class="modes-section">
+      <h2 class="section-title"><i data-lucide="layout-grid"></i> Learning Modes</h2>
+      <div class="modes-grid">
+        <div class="mode-card" onclick="showPage('reading')">
+          <div class="mode-icon"><i data-lucide="bot"></i></div>
+          <h3>AI Reading Maker</h3>
+          <p>Generate reading lessons from any text</p>
+          <span class="mode-tag">AI Powered</span>
+        </div>
+        <div class="mode-card" onclick="showPage('practice'); startNewQuestion()">
+          <div class="mode-icon"><i data-lucide="target"></i></div>
+          <h3>Grammar Ping Pong</h3>
+          <p>Fix incorrect sentences & earn XP</p>
+          <span class="mode-tag">Main Mode</span>
+        </div>
+        <div class="mode-card" onclick="startMode('error-detection')">
+          <div class="mode-icon"><i data-lucide="search"></i></div>
+          <h3>Error Detection</h3>
+          <p>Find the mistake in the sentence</p>
+          <span class="mode-tag">Level Up</span>
+        </div>
+        <div class="mode-card" onclick="startMode('sentence-builder')">
+          <div class="mode-icon"><i data-lucide="puzzle"></i></div>
+          <h3>Sentence Builder</h3>
+          <p>Arrange words into correct sentences</p>
+          <span class="mode-tag">Builder</span>
+        </div>
+        <div class="mode-card" onclick="showPage('vocabulary')">
+          <div class="mode-icon"><i data-lucide="book-marked"></i></div>
+          <h3>Vocabulary Builder</h3>
+          <p>Flashcards with spaced repetition</p>
+          <span class="mode-tag">Vocab</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily Challenge -->
+    <section class="daily-section">
+      <div class="daily-card">
+        <div class="daily-left">
+          <span class="daily-label"><i data-lucide="zap"></i> Daily Challenge</span>
+          <h3 id="dailyChallengeTitle">Fix 5 sentences in a row!</h3>
+          <p>Complete today's challenge to maintain your streak</p>
+          <button class="btn-primary" onclick="startDailyChallenge()">Start Challenge</button>
+        </div>
+        <div class="daily-right">
+          <div class="daily-progress-ring">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" class="ring-bg"/>
+              <circle cx="50" cy="50" r="40" class="ring-fill" id="dailyRing"/>
+            </svg>
+            <span class="ring-text" id="dailyProgress">0/5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ PAGE: PRACTICE ============ -->
+  <div class="page" id="page-practice">
+    <div class="practice-container">
+
+      <!-- Level selector -->
+      <div class="level-bar">
+        <span class="level-label">Level:</span>
+        <div class="level-btns">
+          <button class="level-btn active" data-level="1" onclick="setLevel(1,this)">1 Basic</button>
+          <button class="level-btn" data-level="2" onclick="setLevel(2,this)">2 Inter</button>
+          <button class="level-btn" data-level="3" onclick="setLevel(3,this)">3 Advanced</button>
+          <button class="level-btn" data-level="4" onclick="setLevel(4,this)">4 Expert</button>
+        </div>
+        <div class="mode-bar">
+          <button class="mode-btn active" data-mode="pingpong" onclick="setPracticeMode('pingpong',this)"><i data-lucide="target"></i> Ping Pong</button>
+          <button class="mode-btn" data-mode="error" onclick="setPracticeMode('error',this)"><i data-lucide="search"></i> Error</button>
+          <button class="mode-btn" data-mode="builder" onclick="setPracticeMode('builder',this)"><i data-lucide="puzzle"></i> Builder</button>
+        </div>
+      </div>
+
+      <!-- Score bar -->
+      <div class="score-bar">
+        <div class="score-item"><i data-lucide="help-circle"></i> <span id="qNum">1</span>/10</div>
+        <div class="score-item"><i data-lucide="check-circle-2"></i> <span id="scoreDisplay">0</span></div>
+        <div class="score-item"><i data-lucide="star"></i> <span id="xpDisplay">0</span> XP</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="question-card" id="questionCard">
+        <div class="topic-badge" id="topicBadge">Present Simple</div>
+        <div class="q-label" id="modeLabel"><i data-lucide="x-circle"></i> Incorrect Sentence:</div>
+        <div class="incorrect-sentence" id="incorrectSentence">Loading question...</div>
+        <div class="structure-box" id="structureBox">
+          <span class="structure-label"><i data-lucide="code"></i> Structure:</span>
+          <span class="structure-text" id="structureText"></span>
+        </div>
+      </div>
+
+      <!-- INPUT AREA: Ping Pong mode -->
+      <div id="inputArea">
+        <div class="input-wrap">
+          <input type="text" id="userAnswer" class="answer-input" placeholder="Type the corrected sentence here..." autocomplete="off" />
+          <button class="btn-check" id="checkBtn" onclick="checkAnswer()">Check <i data-lucide="check"></i></button>
+        </div>
+        <div class="hint-row">
+          <button class="btn-hint" onclick="showHint()"><i data-lucide="lightbulb"></i> Hint</button>
+          <button class="btn-skip" onclick="skipQuestion()"><i data-lucide="skip-forward"></i> Skip</button>
+        </div>
+      </div>
+
+      <!-- INPUT AREA: Error Detection mode -->
+      <div id="errorDetectArea" style="display:none;">
+        <p class="sub-label">Click on the word that contains the error:</p>
+        <div class="word-buttons" id="wordButtons"></div>
+      </div>
+
+      <!-- INPUT AREA: Sentence Builder mode -->
+      <div id="sentenceBuilderArea" style="display:none;">
+        <p class="sub-label">Arrange words to form a correct sentence:</p>
+        <div class="word-bank" id="wordBank"></div>
+        <div class="built-sentence" id="builtSentence">
+          <span class="built-placeholder">Click words above to build the sentence</span>
+        </div>
+        <div class="builder-btns">
+          <button class="btn-hint" onclick="clearBuilder()"><i data-lucide="trash-2"></i> Clear</button>
+          <button class="btn-check" onclick="checkBuilder()">Check <i data-lucide="check"></i></button>
+        </div>
+      </div>
+
+      <!-- Explanation Panel -->
+      <div class="explanation-panel hidden" id="explanationPanel">
+        <div class="exp-header" id="expHeader">
+          <span id="expResultIcon"><i data-lucide="check-circle-2"></i></span>
+          <span id="expResultText">Correct!</span>
+        </div>
+        <div class="exp-body">
+          <div class="exp-correct">
+            <span class="exp-label"><i data-lucide="check-circle-2"></i> Correct Answer:</span>
+            <span class="exp-sentence" id="expCorrect"></span>
+          </div>
+          <div class="exp-rule">
+            <span class="exp-label"><i data-lucide="book-open"></i> Grammar Rule:</span>
+            <div class="exp-explanation" id="expExplanation"></div>
+          </div>
+          <div class="exp-structure">
+            <span class="exp-label"><i data-lucide="code"></i> Structure:</span>
+            <span class="exp-code" id="expStructure"></span>
+          </div>
+        </div>
+        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next Question <i data-lucide="arrow-right"></i></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ PAGE: READING MAKER ============ -->
+  <div class="page" id="page-reading">
+    <div class="reading-container">
+      <div class="reading-header">
+        <h2><i data-lucide="bot"></i> AI Reading Maker</h2>
+        <p class="reading-desc">Paste an English paragraph (up to 200 words) and our AI will generate a custom reading comprehension lesson for you!</p>
+      </div>
+      
+      <div class="reading-input-area" id="readingInputArea">
+        <textarea id="readingText" class="reading-textarea" placeholder="Paste your text here (e.g. news article, story, essay)..." oninput="updateReadingWordCount()"></textarea>
+        <div class="word-count" id="readingWordCount">0 / 200 words</div>
+        <button class="btn-primary btn-lg" id="generateReadingBtn" onclick="generateReading()"><i data-lucide="sparkles"></i> Generate Lesson</button>
+      </div>
+
+      <div class="reading-loading" id="readingLoading" style="display:none;">
+        <div class="spinner"></div>
+        <p>AI is analyzing text and creating questions...</p>
+      </div>
+
+      <div class="reading-lesson" id="readingLesson" style="display:none;">
+        <div class="reading-passage-box">
+          <h3><i data-lucide="file-text"></i> Passage</h3>
+          <div class="reading-passage-content" id="readingPassageContent"></div>
+        </div>
+        
+        <div class="reading-questions-area">
+          <h3><i data-lucide="help-circle"></i> Comprehension Check</h3>
+          <div id="readingQuestionsList" class="reading-questions-list"></div>
+          <button class="btn-primary btn-lg" id="checkReadingBtn" onclick="checkReadingAnswers()" style="display:none; margin-top:20px; width:100%;"><i data-lucide="check-circle-2"></i> Submit Answers</button>
+          
+          <div id="readingResultBox" class="reading-result-box" style="display:none;"></div>
+        </div>
+        
+        <button class="btn-outline" onclick="resetReadingMaker()" style="margin-top:20px;"><i data-lucide="refresh-cw"></i> Make Another Lesson</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ PAGE: VOCABULARY ============ -->
+  <div class="page" id="page-vocabulary">
+    <div class="vocab-container">
+      <div class="vocab-header">
+        <h2><i data-lucide="book-marked"></i> Vocabulary Builder</h2>
+        <div class="vocab-controls">
+          <div class="search-input-wrap">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="vocabSearch" class="vocab-search" placeholder="Search word..." oninput="searchVocab(this.value)" />
+          </div>
+          <button class="btn-primary" onclick="startVocabFlashcard()"><i data-lucide="layers"></i> Flashcard Mode</button>
+        </div>
+      </div>
+
+      <!-- Flashcard -->
+      <div id="flashcardMode" style="display:none;" class="flashcard-wrap">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-front" id="fcFront">
+            <div class="fc-word" id="fcWord">Click Start</div>
+            <div class="fc-hint">Click to flip</div>
+          </div>
+          <div class="flashcard-back" id="fcBack">
+            <div class="fc-meaning" id="fcMeaning"></div>
+            <div class="fc-example" id="fcExample"></div>
+            <div class="fc-synonyms" id="fcSynonyms"></div>
+          </div>
+        </div>
+        <div class="fc-controls">
+          <button class="btn-secondary" onclick="fcPrev()"><i data-lucide="arrow-left"></i> Prev</button>
+          <span id="fcCounter">1/20</span>
+          <button class="btn-primary" onclick="fcNext()">Next <i data-lucide="arrow-right"></i></button>
+        </div>
+        <button class="btn-outline" onclick="stopFlashcard()"><i data-lucide="list"></i> Word List</button>
+      </div>
+
+      <!-- Word Grid -->
+      <div id="wordListMode" class="vocab-grid" id="vocabGrid"></div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: GRAMMAR LIBRARY ============ -->
+  <div class="page" id="page-grammar-lib">
+    <div class="grammar-container">
+      <h2><i data-lucide="library"></i> Grammar Library</h2>
+      <div class="grammar-grid" id="grammarGrid"></div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: PROGRESS ============ -->
+  <div class="page" id="page-progress">
+    <div class="progress-container">
+      <h2><i data-lucide="bar-chart-2"></i> Your Progress</h2>
+      <div class="stats-overview">
+        <div class="stat-card primary">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">Total Questions</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-num" id="statCorrect">0</div>
+          <div class="stat-label">Correct Answers</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-num" id="statXP">0</div>
+          <div class="stat-label">Total XP</div>
+        </div>
+        <div class="stat-card info">
+          <div class="stat-num" id="statStreak">0</div>
+          <div class="stat-label">Best Streak</div>
+        </div>
+      </div>
+
+      <div class="accuracy-section">
+        <h3><i data-lucide="crosshairs"></i> Accuracy Rate</h3>
+        <div class="accuracy-bar-wrap">
+          <div class="accuracy-bar-fill" id="accuracyBar"></div>
+          <span class="accuracy-pct" id="accuracyPct">0%</span>
+        </div>
+      </div>
+
+      <div class="topic-progress-section">
+        <h3><i data-lucide="book-check"></i> Topics Mastered</h3>
+        <div class="topics-grid" id="topicsGrid"></div>
+      </div>
+
+      <div class="vocab-progress-section">
+        <h3><i data-lucide="book-open-check"></i> Vocabulary Learned: <span id="vocabLearned">0</span> words</h3>
+      </div>
+
+      <button class="btn-danger" onclick="resetProgress()"><i data-lucide="alert-triangle"></i> Reset All Progress</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CONFETTI -->
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<!-- MODAL: Grammar detail -->
+<div class="modal-overlay" id="grammarModal" onclick="closeGrammarModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeGrammarModal()"><i data-lucide="x"></i></button>
+    <div id="modalContent"></div>
+    <button class="btn-primary" onclick="practiceGrammar()"><i data-lucide="zap"></i> Practice This Topic</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span><i data-lucide="monitor-play" style="display:inline-block; vertical-align:middle; width:16px; height:16px; margin-right:4px;"></i> Grammar Ping Pong Lab — Learn English the fun way!</span>
+    <span>Built with <i data-lucide="heart" style="display:inline-block; vertical-align:middle; width:14px; height:14px; margin:0 2px;"></i> for Vietnamese learners</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
