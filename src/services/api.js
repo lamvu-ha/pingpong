@@ -10,3 +10,13 @@ export async function generateReadingAPI(text) {
   }
   return data;
 }
+
+export async function fetchWordData(word) {
+  try {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    if (!response.ok) throw new Error('Word not found');
+    return await response.json();
+  } catch (e) {
+    return null;
+  }
+}
